@@ -1,2 +1,2 @@
 # python_dame
-Acheckers in Python
+A checkers in Python
