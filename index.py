@@ -19,6 +19,7 @@ class Dame ():
         self.player2_score = 0
         self.player_color_turn = "white"
         self.dict_coor_button = {}
+        self.list_tmp_coor_button = []
         self.big_frame = Frame(width=int(root.winfo_screenwidth() / 2), height=int(root.winfo_screenheight() / 2))
         self.big_frame.pack(fill="both", expand=True)
         self.grid_frame = Frame(width=int(root.winfo_screenwidth() / 2), height=int(root.winfo_screenheight() / 2))
@@ -41,8 +42,7 @@ class Dame ():
 
     """ @TODO: check for dame white & black """
     def check_button_coor(self, coor_ligne, coor_colonne):
-        self.remove_all_selected()
-        self.refresh_case()
+        self.refresh_grid()
         if self.dict_coor_button[coor_ligne][coor_colonne] == "normal_{0}".format(self.player_color_turn):
             self.display_possibility_normal_button_coor(coor_ligne, coor_colonne)
         elif self.dict_coor_button[coor_ligne][coor_colonne] == "dame_{0}".format(self.player_color_turn):
@@ -56,20 +56,22 @@ class Dame ():
 
     """ @TODO: """
     def display_possibility_normal_button_coor(self, ligne, colonne):
+        self.remove_selected_grid()
         if self.player_color_turn == "white":
             if colonne == 0:
-                if self.dict_coor_button[ligne + 1][colonne + 1] == "empty":
-                    self.dict_coor_button[ligne + 1][colonne + 1] = "selectable"
+                if self.dict_coor_button[ligne - 1][colonne + 1] == "empty":
+                    self.list_tmp_coor_button.append([ligne - 1, colonne + 1])
             elif colonne == 9:
                 if self.dict_coor_button[ligne - 1][colonne - 1] == "empty":
-                    self.dict_coor_button[ligne - 1][colonne - 1] = "selectable"
+                    self.list_tmp_coor_button.append([ligne - 1, colonne - 1])
             else:
                 if self.dict_coor_button[ligne - 1][colonne - 1] == "empty":
-                    self.dict_coor_button[ligne - 1][colonne - 1] = "selectable"
+                    self.list_tmp_coor_button.append([ligne - 1, colonne - 1])
                 if self.dict_coor_button[ligne - 1][colonne + 1] == "empty":
-                    self.dict_coor_button[ligne - 1][colonne + 1] = "selectable"
-        self.refresh_case()
+                    self.list_tmp_coor_button.append([ligne - 1, colonne + 1])
+        self.refresh_grid()
 
+    """ First display of all case """
     def init_case(self):
         num_ligne = 10
         num_colonne = 10
@@ -133,48 +135,19 @@ class Dame ():
                     Button(self.grid_frame, bg="burlywood").grid(row=ligne, column=colonne)
                     self.dict_coor_button[ligne][colonne] = "void"
 
-    def refresh_case(self):
-        self.grid_frame.grid_forget()
-        self.grid_frame.pack_forget()
-        self.grid_frame.destroy()
-        self.grid_frame = Frame(width=int(root.winfo_screenwidth() / 2), height=int(root.winfo_screenheight() / 2))
-        self.grid_frame.place(in_=self.big_frame, anchor="c", relx=.5, rely=.5)
-        num_ligne = 10
-        num_colonne = 10
-        for ligne in range(num_ligne):
-            for colonne in range(num_colonne):
-                if self.dict_coor_button[ligne][colonne] == "void":
-                    Button(self.grid_frame, bg="burlywood").grid(row=ligne, column=colonne)
-                elif self.dict_coor_button[ligne][colonne] == "empty":
-                    Button(self.grid_frame, bg="peru",
-                           command=lambda row=ligne, column=colonne: self.check_button_coor(row, column)).grid(
-                        row=ligne, column=colonne)
-                elif self.dict_coor_button[ligne][colonne] == "normal_white":
-                    Button(self.grid_frame, image=self.white_checkers, bg="peru",
-                           command=lambda row=ligne, column=colonne: self.check_button_coor(row, column)).grid(
-                        row=ligne, column=colonne)
-                elif self.dict_coor_button[ligne][colonne] == "dame_white":
-                    pass
-                    #display a buton with an other image than the white pawn
-                elif self.dict_coor_button[ligne][colonne] == "normal_black":
-                    Button(self.grid_frame, image=self.black_checkers, bg="peru",
-                           command=lambda row=ligne, column=colonne: self.check_button_coor(row, column)).grid(
-                        row=ligne, column=colonne)
-                elif self.dict_coor_button[ligne][colonne] == "dame_black":
-                    pass
-                    #display a button with an other image than the black pawn
-                elif self.dict_coor_button[ligne][colonne] == "selectable":
-                    Button(self.grid_frame, bg="red",
-                           command=lambda row=ligne, column=colonne: self.check_button_coor(row, column)).grid(
-                        row=ligne, column=colonne)
+    """ Method to display the selected case and to remove the selected case """
+    def refresh_grid(self):
+        for index, array_coor in enumerate(self.list_tmp_coor_button):
+            Button(self.grid_frame, bg="red",
+                   command=lambda row=array_coor[0], column=array_coor[1]: self.check_button_coor(row, column)).grid(
+                row=array_coor[0], column=array_coor[1])
 
-    def remove_all_selected(self):
-        num_ligne = 10
-        num_colonne = 10
-        for ligne in range(num_ligne):
-            for colonne in range(num_colonne):
-                if self.dict_coor_button[ligne][colonne] == "selectable":
-                    self.dict_coor_button[ligne][colonne] = "empty"
+    def remove_selected_grid(self):
+        for index, array_coor in enumerate(self.list_tmp_coor_button):
+            Button(self.grid_frame, bg="peru",
+                   command=lambda row=array_coor[0], column=array_coor[1]: self.check_button_coor(row, column)).grid(
+                row=array_coor[0], column=array_coor[1])
+        self.list_tmp_coor_button = []
 
     """ Method to display info or error quickly """
     def display_error(self, error_title, error_message):
