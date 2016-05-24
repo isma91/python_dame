@@ -31,7 +31,8 @@ class Dame ():
         self.white_checkers = ImageTk.PhotoImage(self.white)
         self.menu()
         self.init_case()
-        self.label_player = Label(self.big_frame, text="It's the player {0} to play".format(self.player_color_turn)).pack()
+        self.label_player = Label(self.big_frame, text="It's the player {0} to play".format(self.player_color_turn))
+        self.label_player.pack()
 
     def change_turn(self):
         if self.player_color_turn == "black":
@@ -39,7 +40,7 @@ class Dame ():
         else:
             self.player_color_turn = "black"
         self.display_info("Changing turn !!", "It's the player {0} to play".format(self.player_color_turn))
-        self.label_player = Label(self.big_frame, text="It's the player {0} to play".format(self.player_color_turn)).pack()
+        self.label_player.config(text = "It's the player {0} to play".format(self.player_color_turn))
 
     """ @TODO: check for dame white & black """
     def check_button_coor(self, coor_ligne, coor_colonne):
@@ -89,6 +90,37 @@ class Dame ():
                     self.display_case_select(ligne - 1, colonne - 1)
                 elif self.dict_coor_button[ligne - 1][colonne - 1] != "empty" and self.dict_coor_button[ligne - 1][colonne + 1] == "empty":
                     self.display_case_select(ligne - 1, colonne + 1)
+                elif (self.dict_coor_button[ligne - 1][colonne - 1] == "normal_black" or self.dict_coor_button[ligne - 1][colonne - 1] == "dame_black") and (self.dict_coor_button[ligne - 1][colonne + 1] == "normal_black" or self.dict_coor_button[ligne - 1][colonne + 1] == "dame_black"):
+                    print("eney in both side !!")
+                elif (self.dict_coor_button[ligne - 1][colonne - 1] == "normal_white" or self.dict_coor_button[ligne - 1][colonne - 1] == "dame_white") and (self.dict_coor_button[ligne - 1][colonne + 1] == "normal_white" or self.dict_coor_button[ligne - 1][colonne + 1] == "dame_white"):
+                    self.display_error("Can't move !!","You can't move this pawn !! Move the pawn who is in {0}:{1} or in {2}:{3} before !!".format(ligne - 1, colonne + 1, ligne - 1, colonne - 1))
+        else:
+            if colonne == 0:
+                if self.dict_coor_button[ligne + 1][colonne + 1] == "empty" or self.dict_coor_button[ligne + 1][colonne + 1] == "selected":
+                    self.display_case_select(ligne + 1, colonne + 1)
+                elif self.dict_coor_button[ligne + 1][colonne + 1] == "normal_white" or self.dict_coor_button[ligne + 1][colonne + 1] == "dame_white":
+                    print("enemy in the right")
+                elif self.dict_coor_button[ligne + 1][colonne + 1] == "normal_black" or self.dict_coor_button[ligne + 1][colonne + 1] == "dame_black":
+                    self.display_error("Can't move !!","You can't move this pawn !! Move the pawn who is in {0}:{1} before !!".format(ligne + 1, colonne + 1))
+            elif colonne == 9:
+                if self.dict_coor_button[ligne + 1][colonne - 1] == "empty" or self.dict_coor_button[ligne + 1][colonne - 1] == "selected":
+                    self.display_case_select(ligne + 1, colonne - 1)
+                elif self.dict_coor_button[ligne + 1][colonne - 1] == "normal_white" or self.dict_coor_button[ligne + 1][colonne - 1] == "dame_white":
+                    print("enemy in the left")
+                elif self.dict_coor_button[ligne + 1][colonne - 1] == "normal_black" or self.dict_coor_button[ligne + 1][colonne - 1] == "dame_black":
+                    self.display_error("Can't move !!","You can't move this pawn !! Move the pawn who is in {0}:{1} before !!".format(ligne + 1, colonne - 1))
+            else:
+                if (self.dict_coor_button[ligne + 1][colonne - 1] == "empty" or self.dict_coor_button[ligne + 1][colonne - 1] == "selected") and (self.dict_coor_button[ligne + 1][colonne + 1] == "empty" or self.dict_coor_button[ligne + 1][colonne + 1] == "selected"):
+                    self.display_case_select(ligne + 1, colonne - 1)
+                    self.display_case_select(ligne + 1, colonne + 1)
+                elif self.dict_coor_button[ligne + 1][colonne - 1] == "empty" and self.dict_coor_button[ligne + 1][colonne + 1] != "empty":
+                    self.display_case_select(ligne + 1, colonne - 1)
+                elif self.dict_coor_button[ligne + 1][colonne - 1] != "empty" and self.dict_coor_button[ligne + 1][colonne + 1] == "empty":
+                    self.display_case_select(ligne + 1, colonne + 1)
+                elif (self.dict_coor_button[ligne + 1][colonne - 1] == "normal_white" or self.dict_coor_button[ligne + 1][colonne - 1] == "dame_white") and (self.dict_coor_button[ligne + 1][colonne + 1] == "normal_white" or self.dict_coor_button[ligne + 1][colonne + 1] == "dame_white"):
+                    print("eney in both side !!")
+                elif (self.dict_coor_button[ligne + 1][colonne - 1] == "normal_black" or self.dict_coor_button[ligne + 1][colonne - 1] == "dame_black") and (self.dict_coor_button[ligne + 1][colonne + 1] == "normal_black" or self.dict_coor_button[ligne + 1][colonne + 1] == "dame_black"):
+                    self.display_error("Can't move !!","You can't move this pawn !! Move the pawn who is in {0}:{1} or in {2}:{3} before !!".format(ligne + 1, colonne + 1, ligne + 1, colonne - 1))
 
     def move_pawn(self, original_ligne, original_colonne, selected_ligne, selected_colonne):
         if self.player_color_turn == "white":
@@ -102,8 +134,16 @@ class Dame ():
                 pass
                 #do for dame
         else:
-            pass
-            #same for black
+            if self.dict_coor_button[original_ligne][original_colonne] == "normal_black":
+                if self.dict_coor_button[selected_ligne][selected_colonne] == "selected":
+                    Button(self.grid_frame, bg="peru", command=lambda row=original_ligne, column=original_colonne: self.check_button_coor(row,column)).grid(row=original_ligne, column=original_colonne)
+                    self.dict_coor_button[original_ligne][original_colonne] = "empty"
+                    Button(self.grid_frame, image=self.black_checkers, bg="peru", command=lambda row=selected_ligne, column=selected_colonne: self.check_button_coor(row,column)).grid(row=selected_ligne, column=selected_colonne)
+                    self.dict_coor_button[selected_ligne][selected_colonne] = "normal_black"
+            elif self.dict_coor_button[original_ligne][original_colonne] == "dame_black":
+                pass
+                # do for dame
+        self.change_turn()
 
     """ First display of all case """
     def init_case(self):
