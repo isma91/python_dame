@@ -86,9 +86,9 @@ class Dame ():
                     self.display_case_select(ligne - 1, colonne - 1)
                     self.display_case_select(ligne - 1, colonne + 1)
                 elif self.dict_coor_button[ligne - 1][colonne - 1] == "empty" and self.dict_coor_button[ligne - 1][colonne + 1] != "empty":
-                    print("can left but not right")
+                    self.display_case_select(ligne - 1, colonne - 1)
                 elif self.dict_coor_button[ligne - 1][colonne - 1] != "empty" and self.dict_coor_button[ligne - 1][colonne + 1] == "empty":
-                    print("can right but not left")
+                    self.display_case_select(ligne - 1, colonne + 1)
 
     def move_pawn(self, original_ligne, original_colonne, selected_ligne, selected_colonne):
         if self.player_color_turn == "white":
