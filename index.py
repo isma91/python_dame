@@ -19,7 +19,8 @@ class Dame ():
         self.player2_score = 0
         self.player_color_turn = "white"
         self.dict_coor_button = {}
-        self.list_tmp_coor_button = []
+        self.player_coor_ligne = -1
+        self.player_coor_colonne = -1
         self.big_frame = Frame(width=int(root.winfo_screenwidth() / 2), height=int(root.winfo_screenheight() / 2))
         self.big_frame.pack(fill="both", expand=True)
         self.grid_frame = Frame(width=int(root.winfo_screenwidth() / 2), height=int(root.winfo_screenheight() / 2))
@@ -42,34 +43,63 @@ class Dame ():
 
     """ @TODO: check for dame white & black """
     def check_button_coor(self, coor_ligne, coor_colonne):
-        self.refresh_grid()
         if self.dict_coor_button[coor_ligne][coor_colonne] == "normal_{0}".format(self.player_color_turn):
+            self.player_coor_ligne = coor_ligne
+            self.player_coor_colonne = coor_colonne
+            self.remove_all_selected_grid()
             self.display_possibility_normal_button_coor(coor_ligne, coor_colonne)
         elif self.dict_coor_button[coor_ligne][coor_colonne] == "dame_{0}".format(self.player_color_turn):
+            self.remove_all_selected_grid()
             self.display_info("DAME", "C'est une DAME !!")
         elif self.dict_coor_button[coor_ligne][coor_colonne] == "empty":
+            self.remove_all_selected_grid()
             self.display_error("Missclick ?", "You can't choose an empty case !!")
+        elif self.dict_coor_button[coor_ligne][coor_colonne] == "selected":
+            self.move_pawn(self.player_coor_ligne, self.player_coor_colonne, coor_ligne, coor_colonne)
+            self.remove_all_selected_grid()
         elif self.dict_coor_button[coor_ligne][coor_colonne] == "void":
+            self.remove_all_selected_grid()
             self.display_error("Missclick ?", "You can't choose the void case !!")
-        elif self.dict_coor_button[coor_ligne][coor_colonne] != self.player_color_turn:
+        else:
+            self.remove_all_selected_grid()
             self.display_error("Missclick ?", "You can't choose the enemy pawn !!")
+            #@TODO : check if he can combo
 
-    """ @TODO: """
     def display_possibility_normal_button_coor(self, ligne, colonne):
-        self.remove_selected_grid()
         if self.player_color_turn == "white":
             if colonne == 0:
-                if self.dict_coor_button[ligne - 1][colonne + 1] == "empty":
-                    self.list_tmp_coor_button.append([ligne - 1, colonne + 1])
+                if self.dict_coor_button[ligne - 1][colonne + 1] == "empty" or self.dict_coor_button[ligne - 1][colonne + 1] == "selected":
+                    self.display_case_select(ligne - 1, colonne + 1)
+                elif self.dict_coor_button[ligne - 1][colonne + 1] == "normal_black" or self.dict_coor_button[ligne - 1][colonne + 1] == "dame_black":
+                    print("enemy in the right")
             elif colonne == 9:
-                if self.dict_coor_button[ligne - 1][colonne - 1] == "empty":
-                    self.list_tmp_coor_button.append([ligne - 1, colonne - 1])
+                if self.dict_coor_button[ligne - 1][colonne - 1] == "empty" or self.dict_coor_button[ligne - 1][colonne - 1] == "selected":
+                    self.display_case_select(ligne - 1, colonne - 1)
+                elif self.dict_coor_button[ligne - 1][colonne - 1] == "normal_black" or self.dict_coor_button[ligne - 1][colonne - 1] == "dame_black":
+                    print("enemy in the left")
             else:
-                if self.dict_coor_button[ligne - 1][colonne - 1] == "empty":
-                    self.list_tmp_coor_button.append([ligne - 1, colonne - 1])
-                if self.dict_coor_button[ligne - 1][colonne + 1] == "empty":
-                    self.list_tmp_coor_button.append([ligne - 1, colonne + 1])
-        self.refresh_grid()
+                if self.dict_coor_button[ligne - 1][colonne - 1] == "empty" or self.dict_coor_button[ligne - 1][colonne - 1] == "selected" and self.dict_coor_button[ligne - 1][colonne + 1] == "empty" or self.dict_coor_button[ligne - 1][colonne + 1] == "selected":
+                    self.display_case_select(ligne - 1, colonne - 1)
+                    self.display_case_select(ligne - 1, colonne + 1)
+                elif self.dict_coor_button[ligne - 1][colonne - 1] == "empty" and self.dict_coor_button[ligne - 1][colonne + 1] != "empty":
+                    print("can left but not right")
+                elif self.dict_coor_button[ligne - 1][colonne - 1] != "empty" and self.dict_coor_button[ligne - 1][colonne + 1] == "empty":
+                    print("can right but not left")
+
+    def move_pawn(self, original_ligne, original_colonne, selected_ligne, selected_colonne):
+        if self.player_color_turn == "white":
+            if self.dict_coor_button[original_ligne][original_colonne] == "normal_white":
+                if self.dict_coor_button[selected_ligne][selected_colonne] == "selected":
+                    Button(self.grid_frame, bg="peru", command=lambda row=original_ligne, column=original_colonne: self.check_button_coor(row, column)).grid(row=original_ligne, column=original_colonne)
+                    self.dict_coor_button[original_ligne][original_colonne] = "empty"
+                    Button(self.grid_frame, image=self.white_checkers, bg="peru", command=lambda row=selected_ligne, column=selected_colonne: self.check_button_coor(row, column)).grid(row=selected_ligne, column=selected_colonne)
+                    self.dict_coor_button[selected_ligne][selected_colonne] = "normal_white"
+            elif self.dict_coor_button[original_ligne][original_colonne] == "dame_white":
+                pass
+                #do for dame
+        else:
+            pass
+            #same for black
 
     """ First display of all case """
     def init_case(self):
@@ -136,18 +166,16 @@ class Dame ():
                     self.dict_coor_button[ligne][colonne] = "void"
 
     """ Method to display the selected case and to remove the selected case """
-    def refresh_grid(self):
-        for index, array_coor in enumerate(self.list_tmp_coor_button):
-            Button(self.grid_frame, bg="red",
-                   command=lambda row=array_coor[0], column=array_coor[1]: self.check_button_coor(row, column)).grid(
-                row=array_coor[0], column=array_coor[1])
+    def display_case_select(self, ligne, colonne):
+        self.dict_coor_button[ligne][colonne] = "selected"
+        Button(self.grid_frame, bg="red", command=lambda row=ligne, column=colonne: self.check_button_coor(row, column)).grid(row=ligne, column=colonne)
 
-    def remove_selected_grid(self):
-        for index, array_coor in enumerate(self.list_tmp_coor_button):
-            Button(self.grid_frame, bg="peru",
-                   command=lambda row=array_coor[0], column=array_coor[1]: self.check_button_coor(row, column)).grid(
-                row=array_coor[0], column=array_coor[1])
-        self.list_tmp_coor_button = []
+    def remove_all_selected_grid(self):
+        for ligne in range(10):
+            for colonne in range(10):
+                if self.dict_coor_button[ligne][colonne] == "selected":
+                    self.dict_coor_button[ligne][colonne] = "empty"
+                    Button(self.grid_frame, bg="peru",command=lambda row=ligne, column=colonne: self.check_button_coor(row, column)).grid(row=ligne, column=colonne)
 
     """ Method to display info or error quickly """
     def display_error(self, error_title, error_message):
