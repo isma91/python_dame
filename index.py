@@ -72,13 +72,17 @@ class Dame ():
                     self.display_case_select(ligne - 1, colonne + 1)
                 elif self.dict_coor_button[ligne - 1][colonne + 1] == "normal_black" or self.dict_coor_button[ligne - 1][colonne + 1] == "dame_black":
                     print("enemy in the right")
+                elif self.dict_coor_button[ligne - 1][colonne + 1] == "normal_white" or self.dict_coor_button[ligne - 1][colonne + 1] == "dame_white":
+                    self.display_error("Can't move !!", "You can't move this pawn !! Move the pawn who is in {0}:{1} before !!".format(ligne - 1, colonne + 1))
             elif colonne == 9:
                 if self.dict_coor_button[ligne - 1][colonne - 1] == "empty" or self.dict_coor_button[ligne - 1][colonne - 1] == "selected":
                     self.display_case_select(ligne - 1, colonne - 1)
                 elif self.dict_coor_button[ligne - 1][colonne - 1] == "normal_black" or self.dict_coor_button[ligne - 1][colonne - 1] == "dame_black":
                     print("enemy in the left")
+                elif self.dict_coor_button[ligne - 1][colonne - 1] == "normal_white" or self.dict_coor_button[ligne - 1][colonne - 1] == "dame_white":
+                    self.display_error("Can't move !!","You can't move this pawn !! Move the pawn who is in {0}:{1} before !!".format(ligne - 1, colonne - 1))
             else:
-                if self.dict_coor_button[ligne - 1][colonne - 1] == "empty" or self.dict_coor_button[ligne - 1][colonne - 1] == "selected" and self.dict_coor_button[ligne - 1][colonne + 1] == "empty" or self.dict_coor_button[ligne - 1][colonne + 1] == "selected":
+                if (self.dict_coor_button[ligne - 1][colonne - 1] == "empty" or self.dict_coor_button[ligne - 1][colonne - 1] == "selected") and (self.dict_coor_button[ligne - 1][colonne + 1] == "empty" or self.dict_coor_button[ligne - 1][colonne + 1] == "selected"):
                     self.display_case_select(ligne - 1, colonne - 1)
                     self.display_case_select(ligne - 1, colonne + 1)
                 elif self.dict_coor_button[ligne - 1][colonne - 1] == "empty" and self.dict_coor_button[ligne - 1][colonne + 1] != "empty":
