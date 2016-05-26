@@ -133,6 +133,10 @@ class Dame ():
     """ @TODO: check for dame white & black """
     def check_button_coor(self, coor_ligne, coor_colonne):
         if self.dict_coor_button[coor_ligne][coor_colonne] == "normal_{0}".format(self.player_color_turn):
+            self.list_coor_to_go = []
+            self.list_coor_to_colored = []
+            self.player_coor_ligne = -1
+            self.player_coor_colonne = -1
             self.player_coor_ligne = coor_ligne
             self.player_coor_colonne = coor_colonne
             self.remove_all_selected_grid()
@@ -161,7 +165,9 @@ class Dame ():
                     self.display_case_select(ligne - 1, colonne + 1)
                 elif self.dict_coor_button[ligne - 1][colonne + 1] == "normal_black" or self.dict_coor_button[ligne - 1][colonne + 1] == "dame_black":
                     self.check_coor(ligne - 1, colonne + 1, "right", "empty")
-                    print(self.list_coor_to_go)
+                    if len(self.list_coor_to_go) != 0:
+                        Button(self.grid_frame, bg="red", command=lambda row=self.list_coor_to_go[0], column=self.list_coor_to_go[1]: self.check_button_coor(row,column)).grid(row=self.list_coor_to_go[0], column=self.list_coor_to_go[1])
+                        self.dict_coor_button[self.list_coor_to_go[0]][self.list_coor_to_go[1]] = "selected"
                 elif self.dict_coor_button[ligne - 1][colonne + 1] == "normal_white" or self.dict_coor_button[ligne - 1][colonne + 1] == "dame_white":
                     self.display_error("Can't move !!", "You can't move this pawn !! Move the pawn who is in {0}:{1} before !!".format(ligne - 1, colonne + 1))
             elif colonne == 9:
@@ -191,14 +197,20 @@ class Dame ():
                 if self.dict_coor_button[ligne + 1][colonne + 1] == "empty" or self.dict_coor_button[ligne + 1][colonne + 1] == "selected":
                     self.display_case_select(ligne + 1, colonne + 1)
                 elif self.dict_coor_button[ligne + 1][colonne + 1] == "normal_white" or self.dict_coor_button[ligne + 1][colonne + 1] == "dame_white":
-                    print("enemy in the right")
+                    self.check_coor(ligne + 1, colonne + 1, "right", "empty")
+                    if len(self.list_coor_to_go) != 0:
+                        Button(self.grid_frame, bg="red", command=lambda row=self.list_coor_to_go[0], column=self.list_coor_to_go[1]: self.check_button_coor(row,column)).grid(row=self.list_coor_to_go[0], column=self.list_coor_to_go[1])
+                        self.dict_coor_button[self.list_coor_to_go[0]][self.list_coor_to_go[1]] = "selected"
                 elif self.dict_coor_button[ligne + 1][colonne + 1] == "normal_black" or self.dict_coor_button[ligne + 1][colonne + 1] == "dame_black":
                     self.display_error("Can't move !!","You can't move this pawn !! Move the pawn who is in {0}:{1} before !!".format(ligne + 1, colonne + 1))
             elif colonne == 9:
                 if self.dict_coor_button[ligne + 1][colonne - 1] == "empty" or self.dict_coor_button[ligne + 1][colonne - 1] == "selected":
                     self.display_case_select(ligne + 1, colonne - 1)
                 elif self.dict_coor_button[ligne + 1][colonne - 1] == "normal_white" or self.dict_coor_button[ligne + 1][colonne - 1] == "dame_white":
-                    print("enemy in the left")
+                    self.check_coor(ligne + 1, colonne - 1, "left", "empty")
+                    if len(self.list_coor_to_go) != 0:
+                        Button(self.grid_frame, bg="red", command=lambda row=self.list_coor_to_go[0], column=self.list_coor_to_go[1]: self.check_button_coor(row,column)).grid(row=self.list_coor_to_go[0], column=self.list_coor_to_go[1])
+                        self.dict_coor_button[self.list_coor_to_go[0]][self.list_coor_to_go[1]] = "selected"
                 elif self.dict_coor_button[ligne + 1][colonne - 1] == "normal_black" or self.dict_coor_button[ligne + 1][colonne - 1] == "dame_black":
                     self.display_error("Can't move !!","You can't move this pawn !! Move the pawn who is in {0}:{1} before !!".format(ligne + 1, colonne - 1))
             else:
@@ -226,6 +238,7 @@ class Dame ():
                         for array_coor in self.list_coor_to_colored:
                             if self.dict_coor_button[array_coor[0]][array_coor[1]] == "normal_black" or self.dict_coor_button[array_coor[0]][array_coor[1]] == "dame_black":
                                 Button(self.grid_frame, bg="peru", command=lambda row=array_coor[0], column=array_coor[1]: self.check_button_coor(row, column)).grid(row=array_coor[0], column=array_coor[1])
+                                self.dict_coor_button[array_coor[0]][array_coor[1]] = "empty"
                                 self.player1_score = self.player1_score + 1
                         self.display_update_score("white")
                     else:
@@ -233,6 +246,7 @@ class Dame ():
                             for array_coor in self.list_coor_to_colored:
                                 if self.dict_coor_button[array_coor[0]][array_coor[1]] == "normal_black":
                                     Button(self.grid_frame, image=self.black_checkers, bg="peru", command=lambda row=array_coor[0],column=array_coor[1]: self.check_button_coor(row, column)).grid(row=array_coor[0], column=array_coor[1])
+                                    self.dict_coor_button[array_coor[0]][array_coor[1]] = "empty"
                                 elif self.dict_coor_button[array_coor[0]][array_coor[1]] == "dame_black":
                                     print("need to make a button in black dame")
                             self.list_coor_to_colored = []
@@ -250,6 +264,7 @@ class Dame ():
                         for array_coor in self.list_coor_to_colored:
                             if self.dict_coor_button[array_coor[0]][array_coor[1]] == "normal_white" or self.dict_coor_button[array_coor[0]][array_coor[1]] == "dame_white":
                                 Button(self.grid_frame, bg="peru", command=lambda row=array_coor[0], column=array_coor[1]: self.check_button_coor(row, column)).grid(row=array_coor[0], column=array_coor[1])
+                                self.dict_coor_button[array_coor[0]][array_coor[1]] = "empty"
                                 self.player2_score = self.player2_score + 1
                         self.display_update_score("black")
                     else:
@@ -257,6 +272,7 @@ class Dame ():
                             for array_coor in self.list_coor_to_colored:
                                 if self.dict_coor_button[array_coor[0]][array_coor[1]] == "normal_white":
                                     Button(self.grid_frame, image=self.white_checkers, bg="peru", command=lambda row=array_coor[0],column=array_coor[1]: self.check_button_coor(row,column)).grid(row=array_coor[0], column=array_coor[1])
+                                    self.dict_coor_button[array_coor[0]][array_coor[1]] = "empty"
                                 elif self.dict_coor_button[array_coor[0]][array_coor[1]] == "dame_white":
                                     print("need to make a button in whitedame")
                             self.list_coor_to_colored = []
