@@ -133,6 +133,12 @@ class Dame ():
             self.label_player1_score.config(text = "Player white score : {0}".format(self.player1_score))
         else:
             self.label_player2_score.config(text = "Player black score : {0}".format(self.player2_score))
+        if self.player1_score == 20:
+            self.display_info("Win !!", "PLAYER WHITE WIN !!")
+            self.quit()
+        if self.player2_score == 20:
+            self.display_info("Win !!", "PLAYER BLACK WIN !!")
+            self.quit()
 
     def check_button_coor(self, coor_ligne, coor_colonne):
         if self.dict_coor_button[coor_ligne][coor_colonne] == "normal_{0}".format(self.player_color_turn):
