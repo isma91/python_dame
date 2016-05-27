@@ -64,7 +64,7 @@ class Dame ():
                 if direction== "right":
                     if colonne < 8:
                         if case_type_to_search == "empty":
-                            if (self.dict_coor_button[ligne - 1][colonne + 1] == "empty") and (self.dict_coor_button[ligne - 2][colonne + 2] == "normal_black" or self.dict_coor_button[ligne - 2][colonne + 2] == "dame_black") :
+                            if (self.dict_coor_button[ligne - 1][colonne + 1] == "empty" or self.dict_coor_button[ligne - 1][colonne + 1] == "selected") and (self.dict_coor_button[ligne - 2][colonne + 2] == "normal_black" or self.dict_coor_button[ligne - 2][colonne + 2] == "dame_black") :
                                 self.list_coor_to_colored.append([ligne, colonne])
                                 self.list_coor_to_go = [ligne - 1, colonne + 1]
                                 self.color_selected_case()
@@ -78,7 +78,7 @@ class Dame ():
                 elif direction == "left":
                     if colonne > 1:
                         if case_type_to_search == "empty":
-                            if self.dict_coor_button[ligne - 1][colonne - 1] == "empty" and (self.dict_coor_button[ligne - 2][colonne - 2] == "normal_black" or self.dict_coor_button[ligne - 2][colonne - 2] == "dame_black"):
+                            if (self.dict_coor_button[ligne - 1][colonne - 1] == "empty" or self.dict_coor_button[ligne - 1][colonne - 1] == "selected") and (self.dict_coor_button[ligne - 2][colonne - 2] == "normal_black" or self.dict_coor_button[ligne - 2][colonne - 2] == "dame_black"):
                                 self.list_coor_to_colored.append([ligne, colonne])
                                 self.list_coor_to_go = [ligne - 1, colonne - 1]
                                 self.color_selected_case()
@@ -94,7 +94,7 @@ class Dame ():
                 if direction == "right":
                     if colonne < 8:
                         if case_type_to_search == "empty":
-                            if (self.dict_coor_button[ligne + 1][colonne + 1] == "empty") and (self.dict_coor_button[ligne + 2][colonne + 2] == "normal_white" or self.dict_coor_button[ligne + 2][colonne + 2] == "dame_white"):
+                            if (self.dict_coor_button[ligne + 1][colonne + 1] == "empty" or self.dict_coor_button[ligne + 1][colonne + 1] == "selected") and (self.dict_coor_button[ligne + 2][colonne + 2] == "normal_white" or self.dict_coor_button[ligne + 2][colonne + 2] == "dame_white"):
                                 self.list_coor_to_colored.append([ligne, colonne])
                                 self.list_coor_to_go = [ligne + 1, colonne + 1]
                                 self.color_selected_case()
@@ -108,7 +108,7 @@ class Dame ():
                 elif direction == "left":
                     if colonne > 1:
                         if case_type_to_search == "empty":
-                            if (self.dict_coor_button[ligne + 1][colonne - 1] == "empty") and (self.dict_coor_button[ligne + 2][colonne - 2] == "normal_white" or self.dict_coor_button[ligne + 2][colonne - 2] == "dame_white"):
+                            if (self.dict_coor_button[ligne + 1][colonne - 1] == "empty" or self.dict_coor_button[ligne + 1][colonne - 1] == "selected") and (self.dict_coor_button[ligne + 2][colonne - 2] == "normal_white" or self.dict_coor_button[ligne + 2][colonne - 2] == "dame_white"):
                                 self.list_coor_to_colored.append([ligne, colonne])
                                 self.list_coor_to_go = [ligne + 1, colonne - 1]
                                 self.color_selected_case()
